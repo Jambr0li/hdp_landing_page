@@ -1,0 +1,80 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #343a40 !important;
+}
+
+.feature-box {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.feature-box svg {
+    margin-bottom: 15px;
+}
+
+.feature-box h3 {
+    margin-bottom: 10px;
+    color: #343a40;
+}
+
+.feature-box p {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.btn-primary:disabled {
+    background-color: #007bff;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Improved spacing for the main content */
+.container {
+    padding-top: 40px; /* Increased top padding for more space from the navbar */
+    padding-bottom: 60px; /* Added bottom padding for overall balance */
+}
+
+.heading {
+    margin-bottom: 80px; /* Increased margin below the heading for more space */
+}
+
+.download-btn{
+    margin-bottom: 120px; /* Increased margin below the download button for more space */
+}
+
+.row {
+    margin-top: 20px; /* Added margin above the feature boxes for separation */
+}
+
+.feature-box {
+    margin-bottom: 30px; /* Increased margin between feature boxes for better spacing */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .feature-box {
+        min-height: auto;
+        margin-bottom: 20px; /* Reduced margin on smaller screens for compactness */
+    }
+    .container {
+        padding-top: 20px; /* Reduced top padding on smaller screens */
+        padding-bottom: 40px; /* Reduced bottom padding on smaller screens */
+    }
+    .display-4 {
+        margin-bottom: 30px; /* Reduced margin below heading on smaller screens */
+    }
+    .btn-lg {
+        margin-bottom: 40px; /* Reduced margin below button on smaller screens */
+    }
+}
