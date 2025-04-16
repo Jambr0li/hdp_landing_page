@@ -119,6 +119,12 @@ body {
     display: flex;
     list-style: none;
     gap: 2rem;
+    align-items: center; /* vertically center links and buttons */
+}
+
+.nav ul li {
+    display: flex;
+    align-items: center; /* vertically center for inline elements */
 }
 
 .nav a {

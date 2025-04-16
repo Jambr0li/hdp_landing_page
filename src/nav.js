@@ -29,27 +29,25 @@ export default class Nav {
   }
 
   setupMobileNav() {
-    if (window.innerWidth <= 768) {
-      const menuButton = document.createElement('button');
-      menuButton.className = 'mobile-menu-btn';
-      menuButton.setAttribute('aria-label', 'Toggle navigation menu');
-      menuButton.innerHTML = '<i class="fas fa-bars"></i>';
-      this.header.appendChild(menuButton);
+    // Mobile menu button is now in HTML, no dynamic creation needed.
+    // Just add event listener for toggle button.
 
-      menuButton.addEventListener('click', this.toggleNav);
+    const menuButton = document.querySelector('.mobile-menu-btn');
+    if (!menuButton) return;
 
-      document.addEventListener('click', (e) => {
-        if (this.isNavVisible && !this.nav.contains(e.target) && !menuButton.contains(e.target)) {
-          this.toggleNav();
-        }
-      });
+    menuButton.addEventListener('click', this.toggleNav);
 
-      window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && this.isNavVisible) {
-          this.toggleNav();
-        }
-      });
-    }
+    document.addEventListener('click', (e) => {
+      if (this.isNavVisible && !this.nav.contains(e.target) && !menuButton.contains(e.target)) {
+        this.toggleNav();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && this.isNavVisible) {
+        this.toggleNav();
+      }
+    });
   }
 
   setupScrollEffect() {
