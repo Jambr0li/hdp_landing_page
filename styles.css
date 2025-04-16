@@ -576,6 +576,12 @@ body {
 
 /* Animations */
 
+.logo h1 a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+}
+
 @keyframes slideIn {
     to {
         opacity: 1;
