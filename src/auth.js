@@ -84,6 +84,8 @@ const Auth = (function () {
         notifyListeners();
         return;
       }
+      // Explicitly clear any local storage or tokens too
+      await supabase.auth.clearSession();
       currentUser = null;
       updateAuthButton();
       notifyListeners();
