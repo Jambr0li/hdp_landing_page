@@ -136,7 +136,7 @@ export default class Nav {
     } else if (buttonText.includes('log in')) {
       console.log('Triggering signInWithGoogle');
       Auth.signInWithGoogle();
-    } else if (buttonText.includes('log out')) {
+    } else if (button.id === 'btn-logout' || buttonText.includes('log out')) {
       console.log('Triggering signOut');
       Auth.signOut();
     } else if (buttonText.includes('free trial')) {

@@ -76,7 +76,14 @@ const Auth = (function () {
   async function signOut() {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase signOut error:', error.message);
+        // Clear local storage/session anyway to log out locally even if server call fails
+        currentUser = null;
+        updateAuthButton();
+        notifyListeners();
+        return;
+      }
       currentUser = null;
       updateAuthButton();
       notifyListeners();
