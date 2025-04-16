@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticating - Health Parse</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Authenticating...</h2>
+        <p>Please wait while we log you in.</p>
+    </div>
+    <script type="module">
+      import Auth from '/src/auth.js';
+
+      (async function () {
+        try {
+          // Initialize Auth and check session
+          await Auth.init();
+          const user = Auth.getUser();
+          console.log('Callback user:', user);
+          if (user) {
+            window.location.href = '/dashboard.html';
+          } else {
+            console.error('No user found after OAuth callback');
+            window.location.href = '/index.html?error=auth-failed';
+          }
+        } catch (error) {
+          console.error('Auth callback error:', error.message);
+          window.location.href = '/index.html?error=auth-failed';
+        }
+      })();
+    </script>
+</body>
+</html>

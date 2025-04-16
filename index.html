@@ -20,7 +20,7 @@
                     <li><a href="#pricing">Pricing</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="/dashboard.html">Dashboard</a></li>
                 </ul>
             </nav>
             <div class="header-buttons">
@@ -29,6 +29,11 @@
             </div>
         </div>
     </header>
+
+    <!-- Error Handling For Auth -->
+    <section class="error-message" style="display: none; text-align: center; color: red;">
+        <p>Authentication failed. Please try again.</p>
+    </section>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -147,6 +152,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script type="module" src="src/script.js"></script>
 </body>
 </html>

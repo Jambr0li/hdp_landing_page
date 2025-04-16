@@ -1,0 +1,30 @@
+{
+  "name": "hdp_landing_page",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jambr0li/hdp_landing_page.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Jambr0li/hdp_landing_page/issues"
+  },
+  "homepage": "https://github.com/Jambr0li/hdp_landing_page#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4"
+  },
+  "devDependencies": {
+    "vite": "^6.2.6"
+  },
+  "description": ""
+}
