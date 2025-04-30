@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authenticating - Health Parse</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <div class="container">
@@ -12,25 +12,39 @@
         <p>Please wait while we log you in.</p>
     </div>
     <script type="module">
-      import Auth from '/src/auth.js';
+        import Auth from '/src/auth.js';
 
-      (async function () {
-        try {
-          // Initialize Auth and check session
-          await Auth.init();
-          const user = Auth.getUser();
-          console.log('Callback user:', user);
-          if (user) {
-            window.location.href = '/dashboard.html';
-          } else {
-            console.error('No user found after OAuth callback');
-            window.location.href = '/index.html?error=auth-failed';
-          }
-        } catch (error) {
-          console.error('Auth callback error:', error.message);
-          window.location.href = '/index.html?error=auth-failed';
-        }
-      })();
+        (async function () {
+            try {
+                console.log('Callback URL:', window.location.href);
+                await Auth.init();
+                const user = Auth.getUser();
+                console.log('Callback user:', user);
+                const urlParams = new URLSearchParams(window.location.search);
+                const client = urlParams.get('client');
+
+                if (user && client === 'electron') {
+                    const { data: { session }, error } = await window.supabase.auth.getSession();
+                    if (error) throw error;
+                    if (session) {
+                        const redirectUrl = `healthparse://callback?access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}&expires_in=${session.expires_in}`;
+                        console.log('Redirecting to Electron:', redirectUrl);
+                        window.location.href = redirectUrl;
+                    } else {
+                        console.error('No session for Electron client');
+                        window.location.href = '/index.html?error=auth-failed';
+                    }
+                } else if (user) {
+                    window.location.href = '/dashboard.html';
+                } else {
+                    console.error('No user found after OAuth callback');
+                    window.location.href = '/index.html?error=auth-failed';
+                }
+            } catch (error) {
+                console.error('Auth callback error:', error.message);
+                window.location.href = '/index.html?error=auth-failed';
+            }
+        })();
     </script>
 </body>
 </html>

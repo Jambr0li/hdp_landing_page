@@ -8,6 +8,7 @@ export default defineConfig({
         main: '/index.html',
         dashboard: '/dashboard.html',
         'callback': '/callback.html',
+        login: '/login.html',
       },
     },
   },

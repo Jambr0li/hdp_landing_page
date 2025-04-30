@@ -7,6 +7,7 @@ const Auth = (function () {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL; 
   const supabaseKey = import.meta.env.VITE_SUPABASE_KEY; 
   const supabase = createClient(supabaseUrl, supabaseKey);
+  window.supabase = supabase;
   let currentUser = null;
   const listeners = []; // Array to store subscriber callbacks
 
@@ -28,6 +29,7 @@ const Auth = (function () {
   // Initialize session
   async function init() {
     try {
+      console.log("HERE")
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
         console.error('Session fetch error:', error.message);
@@ -53,24 +55,42 @@ const Auth = (function () {
     });
   }
 
-  // Sign in with Google
+
   async function signInWithGoogle() {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const urlParams = new URLSearchParams(window.location.search);
+      const client = urlParams.get('client');
+      const redirectTo = `${window.location.origin}/callback.html${client ? '?client=' + client : ''}`;
+      console.log('OAuth redirectTo:', redirectTo);
+      
+      // Use signInWithOAuth in a way that doesn't immediately redirect
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/callback`,
+          redirectTo,
+          skipBrowserRedirect: true // This prevents automatic redirect
         },
       });
+  
       if (error) {
         console.error('OAuth error:', error.message);
-        throw error;
+        // Here you can handle the error however you want
+        // For example, you could update UI to show error message
+        return;
       }
+  
+      // If no error, manually redirect
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+      
     } catch (error) {
       console.error('Google sign-in error:', error.message);
-      throw error;
+      // Handle error without redirecting
+      // You could show an error message to the user here
     }
   }
+
 
   // Sign out
   async function signOut() {
