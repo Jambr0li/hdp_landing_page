@@ -1,5 +1,6 @@
 // This is your test secret API key.
-const stripe = require('stripe')('sk_test_51RPtLAQxijc1MeNInDBiay8NfOHP76siJqaZcdTnNqTwQRPRIyVFI7RdalOLX9tEhiygdhrQfoOYPV6p4nnJoEjz00XaaBFdKJ');
+require('dotenv').config();
+const stripe = require('stripe')(process.env.VITE_STRIPE_SECRET_KEY);
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
@@ -15,7 +16,7 @@ app.post(
   express.raw({ type: 'application/json' }),
   (request, response) => {
     const sig = request.headers['stripe-signature'];
-    const endpointSecret = 'whsec_f05c9db1f81d305479d267d48a2471174adb566d7968416bdf94160fb08ee6ce';
+    const endpointSecret = process.env.VITE_STRIPE_WEBHOOK_SECRET;
     
     let event;
     try {

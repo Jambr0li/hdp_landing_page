@@ -24,6 +24,7 @@
   "dependencies": {
     "@stripe/stripe-js": "^7.3.0",
     "@supabase/supabase-js": "^2.49.4",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "stripe": "^18.1.0"
   },
