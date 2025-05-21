@@ -9,6 +9,8 @@ export default defineConfig({
         dashboard: '/dashboard.html',
         'callback': '/callback.html',
         login: '/login.html',
+        cancel: '/cancel.html',
+        success: '/success.html',
       },
     },
   },
