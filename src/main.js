@@ -1,6 +1,7 @@
 // main.js - Handles Stripe Checkout form submissions and redirects
-
+console.log("main.js loaded")
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("JASON JASON ")
   // Attach to all forms that post to /api/create-checkout-session
   document.querySelectorAll('form[action="/api/create-checkout-session"]').forEach(form => {
     form.addEventListener('submit', async function(e) {
