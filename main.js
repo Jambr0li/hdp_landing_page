@@ -15,23 +15,48 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const result = await response.json();
-          if (result.url) {
-            window.location = result.url; // Redirect to Stripe Checkout
-            return;
-          } else {
-            alert(result.error || 'An error occurred');
-            return;
+
+        if (response.ok) { // Check for successful HTTP status (e.g., 200-299)
+          try {
+            const result = await response.json(); // Attempt to parse the response body as JSON
+            if (result.url) {
+              window.location.href = result.url; // Redirect to the Stripe Checkout URL
+              return; // Stop further execution after redirect
+            } else {
+              // The response was JSON, but didn't contain a URL or contained an error message
+              alert(result.error || 'Checkout session could not be created. Please try again.');
+            }
+          } catch (jsonError) {
+            // The response was successful (response.ok), but was not valid JSON.
+            // This is unexpected if the server is supposed to send JSON with a URL.
+            console.error('Failed to parse JSON response:', jsonError);
+            alert('The server sent a response that was not in the expected format. Please contact support or try again later.');
           }
         } else {
-          // Fallback: if the response is not JSON, just replace the page content
-          const text = await response.text();
-          document.body.innerHTML = text;
+          // Handle HTTP errors (e.g., 4xx, 5xx)
+          let errorText = `Server error: ${response.status} ${response.statusText}.`;
+          try {
+            // Try to get a more specific error message from the response body (if JSON)
+            const errorResult = await response.json();
+            errorText = errorResult.error || errorResult.message || errorText;
+          } catch (e) {
+            // If the error response body is not JSON, try to read it as text
+            try {
+              const plainTextError = await response.text();
+              if (plainTextError) {
+                // Append a snippet of the plain text error to the error message
+                errorText = `${errorText} Details: ${plainTextError.substring(0, 100)}`;
+              }
+            } catch (textErr) {
+              // If reading as text also fails, just use the status-based errorText
+            }
+          }
+          alert(errorText);
         }
       } catch (err) {
-        alert('Network error. Please try again.');
+        // Handle network errors or other issues with the fetch request itself
+        console.error('Fetch error:', err);
+        alert('A network error occurred. Please check your connection and try again. See console for details.');
       }
     });
   });
