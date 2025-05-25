@@ -1,17 +1,43 @@
 // main.js - Handles Stripe Checkout form submissions and redirects
+import { supabase } from './script.js'; // Import the supabase client
+
 document.addEventListener('DOMContentLoaded', () => {
   // Attach to all forms that post to /api/create-checkout-session
   document.querySelectorAll('form[action="/api/create-checkout-session"]').forEach(form => {
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
+
+      // 1. Get Supabase session to retrieve the access token
+      if (!supabase) {
+        console.error('Supabase client is not available in redirect.js. Ensure it is initialized and exported from script.js.');
+        alert('Client-side configuration error. Unable to proceed with checkout.');
+        return;
+      }
+
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        console.error('User not authenticated or session error:', sessionError?.message);
+        alert('You must be logged in to subscribe. Please log in and try again.');
+        // Optionally, redirect to a login page or show a login modal
+        // e.g., window.location.href = '/login.html';
+        return;
+      }
+
+      const accessToken = session.access_token;
+
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => (data[key] = value));
 
       try {
+        // 2. Add Authorization header to the fetch request
         const response = await fetch(form.action, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`, // <-- ADDED THIS LINE
+          },
           body: JSON.stringify(data),
         });
 
