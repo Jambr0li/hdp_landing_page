@@ -5,8 +5,8 @@ const StripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Supabase client (server-side)
 // Uses SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from .env
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.VITE_SUPABASE_KEY;
 
 let supabase;
 if (supabaseUrl && supabaseServiceRoleKey) {
