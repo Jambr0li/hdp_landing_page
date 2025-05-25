@@ -1,4 +1,5 @@
 import stripe from 'stripe';
+const Stripe = stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,7 +9,7 @@ export default async function handler(req, res) {
   const { lookup_key } = req.body;
 
   try {
-    const prices = await stripe.prices.list({
+    const prices = await Stripe.prices.list({
       lookup_keys: [lookup_key],
       expand: ['data.product'],
     });
@@ -19,7 +20,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await Stripe.checkout.sessions.create({
       billing_address_collection: 'auto',
       line_items: [
         {
