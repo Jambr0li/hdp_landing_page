@@ -107,7 +107,7 @@
                         <li><i class="fas fa-check"></i> item 4</li>
                     </ul>
                     <!-- <form action="http://localhost:4242/create-checkout-session" method="POST"> -->
-                    <form action="https://healthparse.com/create-checkout-session" method="POST">
+                    <form action="/api/create-checkout-session" method="POST">
                         <input type="hidden" name="lookup_key" value="monthly_rate" />
                         <button class="btn btn-primary" id="checkout-and-portal-button" type="submit">Subscribe</button>
                       </form>
@@ -122,12 +122,12 @@
                         <li><i class="fas fa-check"></i> item 4</li>
                     </ul>
                     <!-- <form action="http://localhost:4242/create-checkout-session" method="POST"> -->
-                    <form action="https://healthparse.com/create-checkout-session" method="POST">
+                    <form action="/api/create-checkout-session" method="POST">
                         <input type="hidden" name="lookup_key" value="annual_rate" />
                         <button class="btn btn-primary" id="checkout-and-portal-button" type="submit">Subscribe</button>
                       </form>
                 </div>
-                <form action="/create-portal-session" method="POST">
+                <form action="/api/create-portal-session" method="POST">
                     <input type="hidden" id="session-id" name="session_id" value="" />
                     <button class="btn btn-primary" id="checkout-and-portal-button" type="submit">Manage your billing information</button>
                   </form>
