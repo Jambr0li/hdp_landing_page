@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+import stripe from 'stripe';
+const Stripe = stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,8 +9,8 @@ export default async function handler(req, res) {
   const { session_id } = req.body;
 
   try {
-    const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);
-    const portalSession = await stripe.billingPortal.sessions.create({
+    const checkoutSession = await Stripe.checkout.sessions.retrieve(session_id);
+    const portalSession = await Stripe.billingPortal.sessions.create({
       customer: checkoutSession.customer,
       return_url: process.env.ORIGIN,
     });

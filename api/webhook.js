@@ -1,5 +1,6 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { buffer } = require('micro');
+import { buffer } from 'micro';
+import stripe from 'stripe';
+const Stripe = stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     const rawBody = await buffer(req);
-    event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
+    event = Stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).json({ error: `Webhook Error: ${err.message}` });
