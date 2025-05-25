@@ -1,29 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Thanks for your order!</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="client.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Health Parse</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <section>
-    <div class="product Box-root">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14px" height="16px" viewBox="0 0 14 16" version="1.1">
-          <defs/>
-          <g id="Flow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="0-Default" transform="translate(-121.000000, -40.000000)" fill="#E184DF">
-                  <path d="M127,50 L126,50 C123.238576,50 121,47.7614237 121,45 C121,42.2385763 123.238576,40 126,40 L135,40 L135,56 L133,56 L133,42 L129,42 L129,56 L127,56 L127,50 Z M127,48 L127,42 L126,42 C124.343146,42 123,43.3431458 123,45 C123,46.6568542 124.343146,48 126,48 L127,48 Z" id="Pilcrow"/>
-              </g>
-          </g>
-      </svg>
-      <div class="description Box-root">
-        <h3>Subscription to Starter plan successful!</h3>
-      </div>
+    <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #fff;">
+        <div style="text-align: center;">
+            <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Thank you for subscribing!</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-color);">Refresh your desktop application to get access.</p>
+            <a href="dashboard.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Go To Dashboard</a>
+        </div>
     </div>
-    <form action="/create-portal-session" method="POST">
-      <input type="hidden" id="session-id" name="session_id" value="" />
-      <button id="checkout-and-portal-button" type="submit">Manage your billing information</button>
-    </form>
-  </section>
 </body>
 </html>
