@@ -22,7 +22,7 @@ export default class Download {
       // Update button state
       this.setLoadingState(true);
 
-      // First, get download information
+      // Get download information first
       const infoResponse = await fetch('/api/download-latest-release?info=true');
       
       if (!infoResponse.ok) {
@@ -32,21 +32,8 @@ export default class Download {
 
       const downloadInfo = await infoResponse.json();
       
-      // Show download information to user (optional)
-      const confirmDownload = confirm(
-        `Download ${downloadInfo.fileName}?\n\n` +
-        `Version: ${downloadInfo.releaseVersion}\n` +
-        `Size: ${this.formatFileSize(downloadInfo.fileSize)}\n` +
-        `Released: ${new Date(downloadInfo.publishedAt).toLocaleDateString()}`
-      );
-
-      if (!confirmDownload) {
-        this.setLoadingState(false);
-        return;
-      }
-
-      // Trigger download by creating a hidden link
-      this.triggerDownload();
+      // Show download information - but use a custom modal instead of confirm()
+      this.showDownloadModal(downloadInfo);
 
     } catch (error) {
       console.error('Download failed:', error);
@@ -56,17 +43,84 @@ export default class Download {
     }
   }
 
+  showDownloadModal(downloadInfo) {
+    // Create a custom modal that doesn't break the user gesture chain
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    `;
+
+    modal.innerHTML = `
+      <div style="
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      ">
+        <h3 style="margin: 0 0 16px 0; color: #333;">Download Ready</h3>
+        <p style="margin: 0 0 8px 0; color: #666;">
+          <strong>${downloadInfo.fileName}</strong><br>
+          Version: ${downloadInfo.releaseVersion}<br>
+          Size: ${this.formatFileSize(downloadInfo.fileSize)}<br>
+          Released: ${new Date(downloadInfo.publishedAt).toLocaleDateString()}
+        </p>
+        <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
+          <button id="download-confirm" style="
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+          ">Download</button>
+          <button id="download-cancel" style="
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+          ">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Handle button clicks (these maintain the user gesture chain)
+    modal.querySelector('#download-confirm').addEventListener('click', () => {
+      modal.remove();
+      this.triggerDownload();
+    });
+
+    modal.querySelector('#download-cancel').addEventListener('click', () => {
+      modal.remove();
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
+  }
+
   triggerDownload() {
-    // Create a hidden link that triggers the download
-    const link = document.createElement('a');
-    link.href = '/api/download-latest-release';
-    link.style.display = 'none';
-    link.target = '_blank'; // Open in new tab as backup
-    
-    // Add to DOM, click, and remove
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Use window.location.href - most reliable method
+    window.location.href = '/api/download-latest-release';
   }
 
   setLoadingState(isLoading) {

@@ -43,43 +43,114 @@ export default async function handler(req, res) {
       });
     }
 
-    // Detect the user's operating system from User-Agent
-    const userAgent = req.headers['user-agent'] || '';
-    let targetAsset = null;
-
-    // Logic to select the appropriate asset based on the user's OS
-    if (userAgent.includes('Mac') || userAgent.includes('Darwin')) {
-      // Look for macOS assets (.dmg, .pkg, or .app.zip)
-      targetAsset = releaseData.assets.find(asset => 
-        asset.name.includes('mac') || 
-        asset.name.includes('darwin') || 
-        asset.name.endsWith('.dmg') || 
-        asset.name.endsWith('.pkg') ||
-        asset.name.includes('macos')
-      );
-    } else if (userAgent.includes('Windows') || userAgent.includes('Win')) {
-      // Look for Windows assets (.exe, .msi)
-      targetAsset = releaseData.assets.find(asset => 
-        asset.name.includes('win') || 
-        asset.name.includes('windows') || 
-        asset.name.endsWith('.exe') || 
-        asset.name.endsWith('.msi')
-      );
-    } else if (userAgent.includes('Linux')) {
-      // Look for Linux assets (.AppImage, .deb, .rpm, .tar.gz)
-      targetAsset = releaseData.assets.find(asset => 
-        asset.name.includes('linux') || 
-        asset.name.endsWith('.AppImage') || 
-        asset.name.endsWith('.deb') || 
-        asset.name.endsWith('.rpm') ||
-        asset.name.endsWith('.tar.gz')
-      );
+    // Enhanced OS and architecture detection
+    function detectPlatformAndArch(userAgent) {
+      const ua = userAgent.toLowerCase();
+      
+      // Detect OS
+      let os = 'unknown';
+      if (ua.includes('mac') || ua.includes('darwin')) {
+        os = 'mac';
+      } else if (ua.includes('win')) {
+        os = 'windows';  
+      } else if (ua.includes('linux')) {
+        os = 'linux';
+      }
+      
+      // Detect architecture
+      let arch = 'unknown';
+      
+      if (os === 'mac') {
+        // For Mac, check if it's Apple Silicon or Intel
+        // Note: User-Agent detection for Apple Silicon is limited
+        // Most browsers don't clearly indicate ARM vs Intel in User-Agent
+        if (ua.includes('arm') || ua.includes('apple silicon')) {
+          arch = 'arm64';
+        } else {
+          // Default to Intel for older detection, but this is not reliable
+          arch = 'x64';
+        }
+      } else if (os === 'windows') {
+        if (ua.includes('arm') || ua.includes('wow64')) {
+          arch = 'arm64';
+        } else if (ua.includes('x64') || ua.includes('win64')) {
+          arch = 'x64';
+        } else {
+          arch = 'x86'; // 32-bit
+        }
+      } else if (os === 'linux') {
+        if (ua.includes('arm') || ua.includes('aarch64')) {
+          arch = 'arm64';
+        } else if (ua.includes('x86_64') || ua.includes('x64')) {
+          arch = 'x64';
+        } else {
+          arch = 'x86';
+        }
+      }
+      
+      return { os, arch };
     }
 
-    // If no OS-specific asset found, use the first asset as fallback
-    if (!targetAsset) {
-      targetAsset = releaseData.assets[0];
+    function findBestAsset(assets, platform) {
+      const { os, arch } = platform;
+      
+      // Priority-based matching
+      const candidates = assets.filter(asset => {
+        const name = asset.name.toLowerCase();
+        
+        // First filter by OS
+        if (os === 'mac') {
+          if (!(name.includes('mac') || name.includes('darwin') || 
+                name.includes('macos') || name.endsWith('.dmg') || 
+                name.endsWith('.pkg'))) {
+            return false;
+          }
+        } else if (os === 'windows') {
+          if (!(name.includes('win') || name.includes('windows') || 
+                name.endsWith('.exe') || name.endsWith('.msi'))) {
+            return false;
+          }
+        } else if (os === 'linux') {
+          if (!(name.includes('linux') || name.endsWith('.appimage') || 
+                name.endsWith('.deb') || name.endsWith('.rpm') || 
+                name.endsWith('.tar.gz'))) {
+            return false;
+          }
+        }
+        
+        return true;
+      });
+      
+      if (candidates.length === 0) return null;
+      
+      // Now try to match architecture
+      let bestMatch = null;
+      
+      // Look for exact architecture match
+      for (const asset of candidates) {
+        const name = asset.name.toLowerCase();
+        
+        if (arch === 'arm64' || arch === 'apple-silicon') {
+          if (name.includes('arm64') || name.includes('apple-silicon') || 
+              name.includes('m1') || name.includes('m2') || name.includes('silicon')) {
+            bestMatch = asset;
+            break;
+          }
+        } else if (arch === 'x64') {
+          if (name.includes('x64') || name.includes('intel') || name.includes('amd64')) {
+            bestMatch = asset;
+            break;
+          }
+        }
+      }
+      
+      // If no architecture-specific match, return the first OS match
+      return bestMatch || candidates[0];
     }
+
+    // Replace the OS detection logic with:
+    const platform = detectPlatformAndArch(req.headers['user-agent'] || '');
+    const targetAsset = findBestAsset(releaseData.assets, platform);
 
     // Create a secure download URL by proxying through this endpoint
     // or redirect directly to the GitHub asset download URL
