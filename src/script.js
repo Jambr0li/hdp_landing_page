@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     navigation.setupSmoothScrolling();
   });
 
+  // Initialize download functionality
+  import('./download.js').then(({ default: Download }) => {
+    const download = new Download();
+    download.init();
+  });
+
   // Pricing card interactions
   const pricingCards = document.querySelectorAll('.pricing-card');
   pricingCards.forEach((card) => {
